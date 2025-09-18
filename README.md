@@ -1,70 +1,83 @@
-# Getting Started with Create React App
+# 📦 Frontend — My_Cloud
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Это клиентская часть веб-приложения для управления файлами: загрузка, удаление, переименование, редактирование и генерация ссылок для шаринга.  
+Фронтенд написан на **React**.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## ✨ Возможности
 
-### `npm start`
+- 🔑 Авторизация через токен (JWT хранится в `localStorage`).
+- 📤 Загрузка файлов с комментариями.
+- 🗑 Удаление файлов.
+- ✏️ Переименование файлов.
+- 💬 Добавление и редактирование комментариев.
+- 🔗 Получение ссылки для шаринга файла и копирование её в буфер обмена.
+- 👩‍💻 Поддержка работы администраторов: можно просматривать файлы другого пользователя.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## ⚙️ Технологии
 
-### `npm test`
+- [React](https://react.dev/) — библиотека для построения интерфейса
+- [React Router](https://reactrouter.com/) — маршрутизация между страницами
+- [JavaScript (ES6+)](https://developer.mozilla.org/docs/Web/JavaScript) — основной язык разработки
+- [fetch API](https://developer.mozilla.org/docs/Web/API/Fetch_API) — для работы с REST API бэкенда
+- [JWT (JSON Web Token)](https://jwt.io/) — механизм аутентификации и авторизации
+- [CSS / inline-стили] — базовое оформление интерфейса (без UI-фреймворков)
+- [npm](https://www.npmjs.com/) — менеджер пакетов
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 📂 Структура проекта
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+my_cloud_frontend/
+│── src/
+│ ├── api/
+│ │ └── filesApi.js 
+│ │ └── usersApi.js
+│ ├── components
+│ │ └── AdminPanel.jsx
+│ │ └── FileManadger.jsx
+│ │ └── Headers.jsx
+│ │ └── LoginForm.jsx
+│ │ └── RegisterForm.jsx
+│ ├── pages/
+│ │ └── AdminPage.jsx
+│ │ └── HomePage.jsx
+│ │ └── LoginPage.jsx
+│ │ └── RegisterPage.jsx
+│ │ └── StoragePage.jsx 
+│ ├── utils
+│ │ └── validator.js 
+│ ├── App.jsx 
+│ └── index.js 
+│
+├── public/ 
+├── package.json 
+└── README.md 
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 🚀 Установка и запуск
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 1. Клонирование репозитория
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+git clone https://github.com/tommymolly/my_cloud_frontend.git
+cd frontend
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 2. Установка зависимостей
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+npm install
 
-## Learn More
+### 3. Запуск приложения
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+npm start
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### После этого приложение будет доступно по адресу:
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+👉 http://localhost:3000
