@@ -73,6 +73,17 @@ export const renameFile = async (fileId, newName) => {
   return { status: res.status, data };
 };
 
+// Обновить комментарий
+export const updateComment = async (fileId, comment) => {
+  const res = await fetch(`${BASE_URL}/files/${fileId}/comment/`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify({ comment }),
+  });
+  const data = await res.json();
+  return { status: res.status, data };
+};
+
 // Получить ссылку для шаринга
 export const getShareLink = async (fileId) => {
   const res = await fetch(`${BASE_URL}/files/shared/${fileId}/`, {

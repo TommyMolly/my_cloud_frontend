@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { fetchFiles, uploadFile, deleteFile, renameFile, getShareLink } from "../api/filesApi";
+import { fetchFiles, uploadFile, deleteFile, renameFile, getShareLink, updateComment } from "../api/filesApi";
 
 export default function StoragePage({ user, userId }) {
   const [files, setFiles] = useState([]);
@@ -7,6 +7,7 @@ export default function StoragePage({ user, userId }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [comment, setComment] = useState("");
   const [newName, setNewName] = useState("");
+  const [editingComments, setEditingComments] = useState({});
 
   const targetUserId = user?.isAdmin && userId ? userId : null;
 
@@ -81,6 +82,26 @@ export default function StoragePage({ user, userId }) {
     }
   };
 
+  // Обновление комментария
+  const handleUpdateComment = async (fileId) => {
+    const newComment = editingComments[fileId];
+    if (newComment === undefined) return;
+
+    try {
+      const res = await updateComment(fileId, newComment);
+      if (res.status === 200) {
+        setMessage("Комментарий обновлён");
+        setEditingComments((prev) => ({ ...prev, [fileId]: "" }));
+        loadFiles();
+      } else {
+        setMessage(res.data.error || "Ошибка при обновлении комментария");
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage("Ошибка при обновлении комментария");
+    }
+  };
+
   // Получение ссылки для шаринга
   const handleGetShareLink = async (fileId) => {
   try {
@@ -132,13 +153,22 @@ export default function StoragePage({ user, userId }) {
               <td>{file.last_downloaded_at ? new Date(file.last_downloaded_at).toLocaleString() : "-"}</td>
               <td>
                 <button onClick={() => handleDelete(file.id)}>Удалить</button>{" "}
-                <button onClick={() => handleRename(file.id)}>Переименовать</button>{" "}
                 <input
                   type="text"
                   placeholder="Новое имя"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                 />{" "}
+                <button onClick={() => handleRename(file.id)}>Переименовать</button>{" "}
+                <input
+                  type="text"
+                  placeholder="Редактировать комментарий"
+                  value={editingComments[file.id] ?? file.comment}
+                  onChange={(e) =>
+                    setEditingComments((prev) => ({ ...prev, [file.id]: e.target.value }))
+                  }
+                />
+                <button onClick={() => handleUpdateComment(file.id)}>Сохранить комментарий</button>{" "}
                 <button onClick={() => handleGetShareLink(file.id)}>Скопировать ссылку</button>{" "}
                 <a href={file.file} target="_blank" rel="noopener noreferrer">
                 </a>
