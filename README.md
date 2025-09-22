@@ -31,32 +31,37 @@
 
 ## 📂 Структура проекта
 
+```
 my_cloud_frontend/
-│── src/
+├── src/
 │ ├── api/
 │ │ └── filesApi.js 
 │ │ └── usersApi.js
+│ │
 │ ├── components
 │ │ └── AdminPanel.jsx
 │ │ └── FileManadger.jsx
 │ │ └── Headers.jsx
 │ │ └── LoginForm.jsx
 │ │ └── RegisterForm.jsx
+│ │
 │ ├── pages/
 │ │ └── AdminPage.jsx
 │ │ └── HomePage.jsx
 │ │ └── LoginPage.jsx
 │ │ └── RegisterPage.jsx
 │ │ └── StoragePage.jsx 
+│ │
 │ ├── utils
-│ │ └── validator.js 
+│ │ └── validator.js
+│ │
 │ ├── App.jsx 
 │ └── index.js 
 │
 ├── public/ 
 ├── package.json 
 └── README.md 
-
+```
 
 ---
 
@@ -64,18 +69,15 @@ my_cloud_frontend/
 
 ### 1. Клонирование репозитория
 
-```bash
 git clone https://github.com/tommymolly/my_cloud_frontend.git
 cd frontend
 
 ### 2. Установка зависимостей
 
-```bash
 npm install
 
 ### 3. Запуск приложения
 
-```bash
 npm start
 
 ### После этого приложение будет доступно по адресу:
