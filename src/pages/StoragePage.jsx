@@ -1,21 +1,27 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { fetchFiles, uploadFile, deleteFile, renameFile, getShareLink, updateComment } from "../api/filesApi";
+import {
+  fetchFiles,
+  uploadFile,
+  deleteFile,
+  renameFile,
+  getShareLink,
+  updateComment,
+} from "../api/filesApi";
 
 export default function StoragePage({ user, userId }) {
   const [files, setFiles] = useState([]);
   const [message, setMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [comment, setComment] = useState("");
-  const [newName, setNewName] = useState("");
+  const [newNames, setNewNames] = useState({}); // ключи = file.id, значения = новое имя
   const [editingComments, setEditingComments] = useState({});
 
   const targetUserId = user?.isAdmin && userId ? userId : null;
 
   const loadFiles = useCallback(async () => {
-    if (!localStorage.getItem("access_token")) return; // не грузим без токена
+    if (!localStorage.getItem("access_token")) return;
     try {
       const res = await fetchFiles(targetUserId);
-      console.log("DEBUG fetchFiles response data =", res.data);
       if (res.status === 200) setFiles(res.data);
       else setMessage("Ошибка при загрузке файлов");
     } catch (err) {
@@ -28,7 +34,6 @@ export default function StoragePage({ user, userId }) {
     loadFiles();
   }, [loadFiles]);
 
-  // Загрузка файла
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!selectedFile) return;
@@ -49,7 +54,6 @@ export default function StoragePage({ user, userId }) {
     }
   };
 
-  // Удаление файла
   const handleDelete = async (fileId) => {
     if (!window.confirm("Удалить файл?")) return;
     try {
@@ -64,14 +68,15 @@ export default function StoragePage({ user, userId }) {
     }
   };
 
-  // Переименование файла
   const handleRename = async (fileId) => {
+    const newName = newNames[fileId];
     if (!newName) return;
+
     try {
       const res = await renameFile(fileId, newName);
       if (res.status === 200) {
         setMessage("Файл переименован");
-        setNewName("");
+        setNewNames((prev) => ({ ...prev, [fileId]: "" }));
         loadFiles();
       } else {
         setMessage(res.data.error || "Ошибка при переименовании файла");
@@ -82,7 +87,6 @@ export default function StoragePage({ user, userId }) {
     }
   };
 
-  // Обновление комментария
   const handleUpdateComment = async (fileId) => {
     const newComment = editingComments[fileId];
     if (newComment === undefined) return;
@@ -102,19 +106,18 @@ export default function StoragePage({ user, userId }) {
     }
   };
 
-  // Получение ссылки для шаринга
   const handleGetShareLink = async (fileId) => {
-  try {
-    const res = await getShareLink(fileId);
-    if (res.status === 200) {
-      navigator.clipboard.writeText(res.data.share_url);
-      setMessage("Ссылка скопирована в буфер обмена");
+    try {
+      const res = await getShareLink(fileId);
+      if (res.status === 200) {
+        navigator.clipboard.writeText(res.data.share_url);
+        setMessage("Ссылка скопирована в буфер обмена");
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage("Ошибка при получении ссылки");
     }
-  } catch (err) {
-    console.error(err);
-    setMessage("Ошибка при получении ссылки");
-  }
-};
+  };
 
   return (
     <div>
@@ -156,8 +159,10 @@ export default function StoragePage({ user, userId }) {
                 <input
                   type="text"
                   placeholder="Новое имя"
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
+                  value={newNames[file.id] ?? ""}
+                  onChange={(e) =>
+                    setNewNames((prev) => ({ ...prev, [file.id]: e.target.value }))
+                  }
                 />{" "}
                 <button onClick={() => handleRename(file.id)}>Переименовать</button>{" "}
                 <input
@@ -170,8 +175,7 @@ export default function StoragePage({ user, userId }) {
                 />
                 <button onClick={() => handleUpdateComment(file.id)}>Сохранить комментарий</button>{" "}
                 <button onClick={() => handleGetShareLink(file.id)}>Скопировать ссылку</button>{" "}
-                <a href={file.file} target="_blank" rel="noopener noreferrer">
-                </a>
+                <a href={file.file} target="_blank" rel="noopener noreferrer">Просмотр</a>
               </td>
             </tr>
           ))}

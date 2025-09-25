@@ -10,39 +10,35 @@ export default function LoginPage({ setUser }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+
     try {
       const response = await loginUser({ username, password });
 
-      console.log("DEBUG login response =", response);
-
-      // Проверяем структуру ответа
       const accessToken = response.data?.access;
       const refreshToken = response.data?.refresh;
 
       if (!accessToken || !refreshToken) {
         setError("Сервер не вернул токены");
-        console.error("Ответ сервера не содержит access или refresh:", response.data);
         return;
       }
 
-      // Сохраняем токены в localStorage
+      // Проверка, что админом являются 'admin' или 'tommy'
+      const isAdmin = username === "admin" || username === "tommy";
+
+      // Сохраняем токены и роль
       localStorage.setItem("access_token", accessToken);
       localStorage.setItem("refresh_token", refreshToken);
+      localStorage.setItem("user_role", isAdmin ? "admin" : "user");
 
-      console.log("DEBUG: токены сохранены в localStorage");
-      console.log("access_token =", localStorage.getItem("access_token"));
-      console.log("refresh_token =", localStorage.getItem("refresh_token"));
-
-      // Получаем роль с бэка
-      const role = response.data.is_admin ? "admin" : "user";
-      localStorage.setItem("user_role", role);
-
+      // Обновляем состояние пользователя
       setUser({
         token: accessToken,
-        isAdmin: response.data.is_admin,
+        isAdmin,
       });
 
-      navigate(role === "admin" ? "/admin" : "/storage");
+      // Переходим на нужную страницу
+      navigate(isAdmin ? "/admin" : "/storage");
     } catch (err) {
       console.error("Ошибка при логине:", err);
       setError("Неверный логин или пароль");
@@ -75,4 +71,3 @@ export default function LoginPage({ setUser }) {
     </div>
   );
 }
-

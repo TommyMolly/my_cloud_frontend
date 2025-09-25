@@ -37,13 +37,10 @@ my_cloud_frontend/
 │ ├── api/
 │ │ └── filesApi.js 
 │ │ └── usersApi.js
+│ │ └── auth.js
 │ │
 │ ├── components
-│ │ └── AdminPanel.jsx
-│ │ └── FileManadger.jsx
 │ │ └── Headers.jsx
-│ │ └── LoginForm.jsx
-│ │ └── RegisterForm.jsx
 │ │
 │ ├── pages/
 │ │ └── AdminPage.jsx
@@ -68,18 +65,18 @@ my_cloud_frontend/
 ## 🚀 Установка и запуск
 
 ### 1. Клонирование репозитория
-
+```
 git clone https://github.com/tommymolly/my_cloud_frontend.git
-cd frontend
-
+```
 ### 2. Установка зависимостей
-
+```
 npm install
-
+```
 ### 3. Запуск приложения
-
+```
 npm start
-
+```
 ### После этого приложение будет доступно по адресу:
-
+```
 👉 http://localhost:3000
+```

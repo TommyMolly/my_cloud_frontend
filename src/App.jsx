@@ -7,28 +7,60 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import StoragePage from "./pages/StoragePage";
 import AdminPage from "./pages/AdminPage";
+import { refreshAccessToken } from "./api/auth"; 
+
+// Защищённый маршрут для авторизованных пользователей
+function ProtectedRoute({ user, children }) {
+  return user ? children : <Navigate to="/login" />;
+}
+
+// Защищённый маршрут для админов
+function AdminRoute({ user, children }) {
+  return user && user.isAdmin ? children : <Navigate to="/" />;
+}
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(undefined); // undefined = ещё не загружен
 
-  // Загружаем пользователя
+  // Загружаем пользователя из localStorage
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     const role = localStorage.getItem("user_role");
     if (token) {
       setUser({
         token,
-        isAdmin: role === "admin",
+        isAdmin: role === "admin", 
       });
+    } else {
+      setUser(null);
     }
   }, []);
+
+  // Автообновление токена каждые 4 минуты
+  useEffect(() => {
+    if (!user) return;
+
+    const interval = setInterval(async () => {
+      const newToken = await refreshAccessToken();
+      if (!newToken) {
+        console.warn("Не удалось обновить токен → разлогиниваем");
+        handleLogout();
+      }
+    }, 4 * 60 * 1000); // каждые 4 минуты
+
+    return () => clearInterval(interval);
+  }, [user]);
 
   // Выход
   const handleLogout = () => {
     localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     localStorage.removeItem("user_role");
     setUser(null);
   };
+
+  // Пока пользователь загружается, ничего не рендерим
+  if (user === undefined) return null;
 
   return (
     <Router>
@@ -41,24 +73,30 @@ function App() {
           {/* Авторизация */}
           <Route
             path="/login"
-            element={user ? <Navigate to="/" /> : <LoginPage setUser={setUser} />}
+            element={user ? <Navigate to={user.isAdmin ? "/admin" : "/storage"} /> : <LoginPage setUser={setUser} />}
           />
           <Route
             path="/register"
-            element={user ? <Navigate to="/" /> : <RegisterPage setUser={setUser} />}
+            element={user ? <Navigate to={user.isAdmin ? "/admin" : "/storage"} /> : <RegisterPage setUser={setUser} />}
           />
 
-          {/* Хранилище файлов */}
+          {/* Хранилище файлов (только авторизованные) */}
           <Route
             path="/storage"
-            element={user ? <StoragePage user={user} /> : <Navigate to="/login" />}
+            element={
+              <ProtectedRoute user={user}>
+                <StoragePage user={user} />
+              </ProtectedRoute>
+            }
           />
 
-          {/* Админка */}
+          {/* Админка (только админ) */}
           <Route
             path="/admin"
             element={
-              user && user.isAdmin ? <AdminPage user={user} /> : <Navigate to="/" />
+              <AdminRoute user={user}>
+                <AdminPage user={user} />
+              </AdminRoute>
             }
           />
 

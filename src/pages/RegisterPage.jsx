@@ -33,18 +33,8 @@ export default function RegisterPage({ setUser }) {
         password,
       });
 
-      localStorage.setItem("access_token", data.access);
-      localStorage.setItem("refresh_token", data.refresh);
-
-      const role = data.is_admin ? "admin" : "user";
-      localStorage.setItem("user_role", role);
-
-      setUser({
-        token: data.access,
-        isAdmin: data.is_admin,
-      });
-
-      navigate("/storage");
+      alert("Регистрация успешна! Войдите через логин.");
+      navigate("/login");
     } catch (err) {
       console.error(err);
       const serverMsg = err.response?.data?.username?.[0] || "Попробуйте снова";
