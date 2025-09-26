@@ -19,11 +19,11 @@ export default function LoginPage({ setUser }) {
       const refreshToken = response.data?.refresh;
 
       if (!accessToken || !refreshToken) {
-        setError("Сервер не вернул токены");
+        setError("Пользователь не найден");
         return;
       }
 
-      // Проверка, что админом являются 'admin' или 'tommy'
+      
       const isAdmin = username === "admin" || username === "tommy";
 
       // Сохраняем токены и роль

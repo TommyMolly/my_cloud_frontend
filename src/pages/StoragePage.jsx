@@ -107,16 +107,35 @@ export default function StoragePage({ user, userId }) {
   };
 
   const handleGetShareLink = async (fileId) => {
-    try {
-      const res = await getShareLink(fileId);
-      if (res.status === 200) {
-        navigator.clipboard.writeText(res.data.share_url);
+  try {
+    const res = await getShareLink(fileId);
+    if (res.status === 200) {
+      const link = res.data.share_url;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(link);
         setMessage("Ссылка скопирована в буфер обмена");
+      } else {
+        // fallback временно для HTTP
+        const tempInput = document.createElement("input");
+        tempInput.value = link;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        setMessage("Ссылка скопирована (fallback)");
       }
-    } catch (err) {
-      console.error(err);
-      setMessage("Ошибка при получении ссылки");
     }
+  } catch (err) {
+    console.error(err);
+    setMessage("Ошибка при получении ссылки");
+  }
+};
+
+const isPreviewable = (filename) => {
+    const previewExt = ["pdf", "png", "jpg", "jpeg", "gif", "txt"];
+    const ext = filename.split(".").pop().toLowerCase();
+    return previewExt.includes(ext);
   };
 
   return (
@@ -175,7 +194,11 @@ export default function StoragePage({ user, userId }) {
                 />
                 <button onClick={() => handleUpdateComment(file.id)}>Сохранить комментарий</button>{" "}
                 <button onClick={() => handleGetShareLink(file.id)}>Скопировать ссылку</button>{" "}
-                <a href={file.file} target="_blank" rel="noopener noreferrer">Просмотр</a>
+                {isPreviewable(file.name) ? (
+                  <a href={file.file} target="_blank" rel="noopener noreferrer">Просмотр</a>
+                ) : (
+                  <span>Предпросмотр недоступен</span>
+                )}
               </td>
             </tr>
           ))}

@@ -77,6 +77,7 @@ export default function RegisterPage({ setUser }) {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+        <small>Пароль должен содержать строчную, заглавную букву и символ (!, @, # и т.д.)</small>
         <br />
         <button type="submit">Зарегистрироваться</button>
       </form>
