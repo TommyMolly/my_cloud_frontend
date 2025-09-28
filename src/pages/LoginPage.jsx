@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/usersApi";
+import "../styles/auth.css";
 
 export default function LoginPage({ setUser }) {
   const [username, setUsername] = useState("");
@@ -23,21 +24,17 @@ export default function LoginPage({ setUser }) {
         return;
       }
 
-      
       const isAdmin = username === "admin" || username === "tommy";
 
-      // Сохраняем токены и роль
       localStorage.setItem("access_token", accessToken);
       localStorage.setItem("refresh_token", refreshToken);
       localStorage.setItem("user_role", isAdmin ? "admin" : "user");
 
-      // Обновляем состояние пользователя
       setUser({
         token: accessToken,
         isAdmin,
       });
 
-      // Переходим на нужную страницу
       navigate(isAdmin ? "/admin" : "/storage");
     } catch (err) {
       console.error("Ошибка при логине:", err);
@@ -46,7 +43,7 @@ export default function LoginPage({ setUser }) {
   };
 
   return (
-    <div>
+    <div className="auth-container">
       <h2>Вход</h2>
       <form onSubmit={handleSubmit}>
         <input
@@ -56,7 +53,6 @@ export default function LoginPage({ setUser }) {
           onChange={(e) => setUsername(e.target.value)}
           required
         />
-        <br />
         <input
           type="password"
           placeholder="Пароль"
@@ -64,10 +60,9 @@ export default function LoginPage({ setUser }) {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <br />
         <button type="submit">Войти</button>
       </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 }

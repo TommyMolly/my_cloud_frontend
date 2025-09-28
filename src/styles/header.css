@@ -1,0 +1,36 @@
+.header {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ccc;
+  background-color: #f9f9f9;
+}
+
+.header a {
+  margin: 0 10px;
+  color: #007bff;
+  transition: color 0.2s;
+}
+
+.header a.active {
+  font-weight: bold;
+  color: #0056b3;
+}
+
+.header a:hover {
+  color: #0056b3;
+}
+
+.header button {
+  margin: 0 10px;
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.header button:hover {
+  color: #0056b3;
+}

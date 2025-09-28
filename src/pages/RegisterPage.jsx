@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/usersApi";
 import { validateUsername, validateEmail, validatePassword } from "../utils/validator";
+import "../styles/auth.css"; 
 
 export default function RegisterPage({ setUser }) {
   const [username, setUsername] = useState("");
@@ -15,7 +16,6 @@ export default function RegisterPage({ setUser }) {
     e.preventDefault();
     setError("");
 
-    // Валидация
     const usernameError = validateUsername(username);
     if (usernameError) return setError(usernameError);
 
@@ -43,7 +43,7 @@ export default function RegisterPage({ setUser }) {
   };
 
   return (
-    <div>
+    <div className="auth-container">
       <h2>Регистрация</h2>
       <form onSubmit={handleSubmit}>
         <input
@@ -53,7 +53,6 @@ export default function RegisterPage({ setUser }) {
           onChange={(e) => setUsername(e.target.value)}
           required
         />
-        <br />
         <input
           type="text"
           placeholder="Полное имя"
@@ -61,7 +60,6 @@ export default function RegisterPage({ setUser }) {
           onChange={(e) => setFullname(e.target.value)}
           required
         />
-        <br />
         <input
           type="email"
           placeholder="Email"
@@ -69,7 +67,6 @@ export default function RegisterPage({ setUser }) {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <br />
         <input
           type="password"
           placeholder="Пароль"
@@ -78,10 +75,9 @@ export default function RegisterPage({ setUser }) {
           required
         />
         <small>Пароль должен содержать строчную, заглавную букву и символ (!, @, # и т.д.)</small>
-        <br />
         <button type="submit">Зарегистрироваться</button>
       </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 }

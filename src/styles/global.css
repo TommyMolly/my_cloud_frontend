@@ -1,0 +1,56 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Фон для всего приложения */
+body {
+  font-family: Arial, sans-serif;
+  background-image: url('../assets/background.jpg');
+  background-size: cover;       
+  background-position: center;  
+  background-repeat: no-repeat; 
+  background-attachment: fixed; 
+  color: #333;
+}
+
+/* Все ссылки без подчеркивания */
+a {
+  text-decoration: none;
+  color: inherit; 
+}
+
+
+.auth-container,
+.storage-container,
+.admin-container {
+  background-color: rgba(255, 255, 255, 0.85); 
+}
+
+.home-container {
+  text-align: center;
+  color: white; 
+  margin-top: 100px;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6); 
+}
+
+.home-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.home-container p {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.home-container a {
+  color: #ffd700; 
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+.home-container a:hover {
+  color: #ffa500;
+}

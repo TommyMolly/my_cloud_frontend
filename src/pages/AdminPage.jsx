@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { fetchUsers, deleteUser, toggleAdmin } from "../api/usersApi";
 import StoragePage from "./StoragePage";
+import "../styles/admin.css";
 
 export default function AdminPage({ user }) {
   const [users, setUsers] = useState([]);
@@ -53,12 +54,12 @@ export default function AdminPage({ user }) {
   const handleManageFiles = (userId) => setSelectedUserId(userId);
 
   return (
-    <div>
+    <div className="admin-container">
       <h1>Административная страница</h1>
-      {message && <p style={{ color: "green" }}>{message}</p>}
+      {message && <p className="message">{message}</p>}
 
       {!selectedUserId ? (
-        <table border="1" cellPadding="8" style={{ borderCollapse: "collapse", width: "100%" }}>
+        <table>
           <thead>
             <tr>
               <th>Логин</th>
@@ -70,7 +71,7 @@ export default function AdminPage({ user }) {
             </tr>
           </thead>
           <tbody>
-            {users.map((u) => (
+            {users.map(u => (
               <tr key={u.id}>
                 <td>{u.username}</td>
                 <td>{u.full_name}</td>
