@@ -6,7 +6,7 @@ export const refreshAccessToken = async () => {
   if (!refresh) return null;
 
   try {
-    const res = await fetch(`${BASE_URL}/accounts/token/refresh/`, {
+    const res = await fetch(`${BASE_URL}/token/refresh/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refresh }),
@@ -35,7 +35,7 @@ export const authFetch = async (url, options = {}) => {
     },
   });
 
-  // если токен протух → пробуем обновить
+  
   if (res.status === 401) {
     access = await refreshAccessToken();
     if (!access) return res;

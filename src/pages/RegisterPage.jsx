@@ -1,44 +1,72 @@
-import React, { useState } from "react"; 
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/usersApi";
 import { validateUsername, validateEmail, validatePassword } from "../utils/validator";
-import "../styles/auth.css"; 
+import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastProvider";
+import "../styles/auth.css";
 
-export default function RegisterPage({ setUser }) {
+export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const { login } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     const usernameError = validateUsername(username);
-    if (usernameError) return setError(usernameError);
+    if (usernameError) {
+      setError(usernameError);
+      setLoading(false);
+      return;
+    }
 
     const emailError = validateEmail(email);
-    if (emailError) return setError(emailError);
+    if (emailError) {
+      setError(emailError);
+      setLoading(false);
+      return;
+    }
 
     const passwordError = validatePassword(password);
-    if (passwordError) return setError(passwordError);
+    if (passwordError) {
+      setError(passwordError);
+      setLoading(false);
+      return;
+    }
 
     try {
-      const data = await registerUser({
+      const { status, data } = await registerUser({
         username: username.trim(),
         full_name: fullname.trim(),
         email: email.trim(),
         password,
       });
 
-      alert("Регистрация успешна! Войдите через логин.");
-      navigate("/login");
+      if (status !== 201) {
+        const serverMsg =
+          data?.username?.[0] || data?.email?.[0] || data?.detail || "Попробуйте снова";
+        setError("Ошибка при регистрации: " + serverMsg);
+        return;
+      }
+
+      showToast("Регистрация успешна! Войдите через логин.", "success");
+
+      navigate("/login", { replace: true });
     } catch (err) {
-      console.error(err);
-      const serverMsg = err.response?.data?.username?.[0] || "Попробуйте снова";
-      setError("Ошибка при регистрации: " + serverMsg);
+      console.error("Ошибка при регистрации:", err);
+      setError("Ошибка сети. Попробуйте снова");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,7 +103,9 @@ export default function RegisterPage({ setUser }) {
           required
         />
         <small>Пароль должен содержать строчную, заглавную букву и символ (!, @, # и т.д.)</small>
-        <button type="submit">Зарегистрироваться</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Регистрируем..." : "Зарегистрироваться"}
+        </button>
       </form>
       {error && <p className="error-message">{error}</p>}
     </div>

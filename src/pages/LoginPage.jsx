@@ -1,44 +1,51 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/usersApi";
+import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastProvider";
 import "../styles/auth.css";
 
-export default function LoginPage({ setUser }) {
+export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const { setUser } = useAuth(); 
+  const { showToast } = useToast(); 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setLoading(true);
 
     try {
-      const response = await loginUser({ username, password });
+      const { status, data } = await loginUser({ username, password });
+      const accessToken = data?.access;
+      const refreshToken = data?.refresh;
+      const isAdmin = !!data?.is_admin;
 
-      const accessToken = response.data?.access;
-      const refreshToken = response.data?.refresh;
-
-      if (!accessToken || !refreshToken) {
-        setError("Пользователь не найден");
+      if (status !== 200 || !accessToken || !refreshToken) {
+        showToast(data?.detail || "Неверный логин или пароль", "error");
         return;
       }
 
-      const isAdmin = username === "admin" || username === "tommy";
-
+      
       localStorage.setItem("access_token", accessToken);
       localStorage.setItem("refresh_token", refreshToken);
-      localStorage.setItem("user_role", isAdmin ? "admin" : "user");
+      localStorage.setItem("is_admin", isAdmin);
 
-      setUser({
-        token: accessToken,
-        isAdmin,
-      });
+      
+      setUser({ token: accessToken, isAdmin });
 
-      navigate(isAdmin ? "/admin" : "/storage");
+      showToast("Вход успешен!", "success");
+
+      
+      navigate(isAdmin ? "/admin" : "/storage", { replace: true });
     } catch (err) {
       console.error("Ошибка при логине:", err);
-      setError("Неверный логин или пароль");
+      showToast("Ошибка сети. Попробуйте снова", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,9 +67,10 @@ export default function LoginPage({ setUser }) {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit">Войти</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Входим..." : "Войти"}
+        </button>
       </form>
-      {error && <p className="error-message">{error}</p>}
     </div>
   );
 }

@@ -33,7 +33,8 @@ export const fetchUsers = async () => {
 
 // Удалить пользователя (только для админа)
 export const deleteUser = async (userId) => {
-  const res = await authFetch(`${BASE_URL}/accounts/${userId}/delete/`, {
+  // REST: DELETE /api/accounts/users/{id}/
+  const res = await authFetch(`${BASE_URL}/accounts/users/${userId}/`, {
     method: "DELETE",
   });
   return { status: res.status };
@@ -41,7 +42,8 @@ export const deleteUser = async (userId) => {
 
 // Изменить роль пользователя (только для админа)
 export const toggleAdmin = async (userId, isAdmin) => {
-  const res = await authFetch(`${BASE_URL}/accounts/${userId}/update_admin/`, {
+  // REST: PATCH /api/accounts/users/{id}/  { is_admin }
+  const res = await authFetch(`${BASE_URL}/accounts/users/${userId}/`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ is_admin: !isAdmin }),
